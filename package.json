@@ -1,0 +1,7 @@
+{
+  "dependencies": {
+    "waves-audio": "github:wavesjs/waves-audio",
+    "waves-lfo": "github:wavesjs/waves-lfo",
+    "waves-ui": "github:wavesjs/waves-ui"
+  }
+}

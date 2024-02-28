@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>SVAR Audio Rater</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/audio_rater.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <div class="filename" style="text-align: center; font-size:14px; font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;">
+            <button id="homeButton" class="home-button"><i class="fas fa-home"> Home</i></button>
+            <h2>File Name -- {{ filename }}</h2>
+            <br>
+                <span class='bucket' id="b1" > Confidence == 100% </span>
+                <span class='bucket' id="b2" > Confidence >= 80% </span>
+                <span class='bucket' id="b3" > Confidence >= 50% </span>
+                <span class='bucket' id="b4" > Confidence >= 20% </span>
+                <span class='bucket' id="b5" > Confidence < 20% </span>
+                <span class='bucket' id="LP" > LongPause -- # </span>
+
+            <br><br>
+
+            <div class="audio-player">
+                <audio id="audio" preload="auto" controls>
+                  <source src="{{ url_for('static', filename='audios/' + filename + '.wav') }}" type="audio/wav">
+                  Your browser does not support the audio element.
+                </audio>
+            </div> 
+
+            <br><br>
+
+            <h3>--- Transcript ---</h3>
+
+
+            <div class="word-list">
+                {% for item in data %}
+                    {% if item['confidence'] == 1.0 %}
+                        <button class="word" id = 'b1' time-start="{{ item['start'] }}" time-dur="{{ item['duration'] }}" time-end="{{ item['end'] }}">{{ item['word'] }}</button>
+                        {% if item['pause'] != ''%}
+                            <button class="word" id = 'LP'>{{ item['pause'] }}</button>
+                        {% endif %}
+
+                    {% elif item['confidence'] < 1.0 and item['confidence'] >= 0.80 %}
+                        <button class="word" id = 'b2' time-start="{{ item['start'] }}" time-dur="{{ item['duration'] }}" time-end="{{ item['end'] }}">{{ item['word'] }}</button>
+                        {% if item['pause'] != '' %}
+                            <button class="word" id = 'LP'>{{ item['pause'] }}</button>
+                        {% endif %}
+
+                    {% elif item['confidence'] < 0.80 and item['confidence'] >= 0.50 %}
+                        <button class="word" id = 'b3' time-start="{{ item['start'] }}" time-dur="{{ item['duration'] }}" time-end="{{ item['end'] }}">{{ item['word'] }}</button>
+                        {% if item['pause'] != '' %}
+                            <button class="word" id = 'LP'>{{ item['pause'] }}</button>
+                        {% endif %}
+
+                    {% elif item['confidence'] < 0.50 and item['confidence'] >= 0.20 %}
+                        <button class="word" id = 'b4' time-start="{{ item['start'] }}" time-dur="{{ item['duration'] }}" time-end="{{ item['end'] }}">{{ item['word'] }}</button>
+                        {% if item['pause'] != '' %}
+                            <button class="word" id = 'LP'>{{ item['pause'] }}</button>
+                        {% endif %}
+                    {% else %}
+                        <button class="word" id = 'b5' time-start="{{ item['start'] }}" time-dur="{{ item['duration'] }}" time-end="{{ item['end'] }}">{{ item['word'] }}</button>
+                        {% if item['pause'] != '' %}
+                            <button class="word" id = 'LP' >{{ item['pause'] }}</button>
+                        {% endif %}
+                    {% endif %}
+                {% endfor %}
+            </div>
+    
+            <br><br>
+
+            <h3>--- MetaData ---</h3>
+
+            <div class="counts" style="text-align: center; font-size:14px; font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;">
+                <span class='count'>Confidence 100% - {{counts['c100']}} </span>
+                <span class='count'>Confidence 80% - {{counts['c80']}} </span>
+                <span class='count'>Confidence 50% - {{counts['c50']}} </span>
+                <span class='count'>Confidence 20% - {{counts['c20']}} </span>
+                <span class='count'>Confidence < 20% - {{counts['wrong']}} </span>
+                <span class='count'>Long Pauses - {{counts['longPause']}} </span>
+                <span class='count'>Pauses Duration - {{counts['longPauseDur']}} </span>
+                <span class='count'>RateOfSpeech - {{counts['rateOfSpeech']}} </span>
+            </div>  
+            
+        
+    <br><br>
+    <h3>--- Ratings ---</h3>
+    </div>     
+    <div class="card">
+        <form id="ratingForm">
+                <h4 for="pronunciation">Pronunciation : </h4>
+                    <input type="radio" id="pronunciation1" name="pronunciation" value="1" required>
+                    <label for="pronunciation1"><span class="radio-circle"></span> 1</label>
+                    <input type="radio" id="pronunciation2" name="pronunciation" value="2" required>
+                    <label for="pronunciation2"><span class="radio-circle"></span> 2</label>
+                    <input type="radio" id="pronunciation3" name="pronunciation" value="3" required>
+                    <label for="pronunciation3"><span class="radio-circle"></span> 3</label>
+                    <input type="radio" id="pronunciation4" name="pronunciation" value="4" required>
+                    <label for="pronunciation4"><span class="radio-circle"></span> 4</label>
+                    <input type="radio" id="pronunciation5" name="pronunciation" value="5" required>
+                    <label for="pronunciation5"><span class="radio-circle"></span> 5</label>
+        
+                <br>
+                <h4 for="fluency">Fluency : </h4>
+                    <input type="radio" id="fluency1" name="fluency" value="1" required>
+                    <label for="fluency1"><span class="radio-circle"></span> 1</label>
+                    <input type="radio" id="fluency2" name="fluency" value="2" required>
+                    <label for="fluency2"><span class="radio-circle"></span> 2</label>
+                    <input type="radio" id="fluency3" name="fluency" value="3" required>
+                    <label for="fluency3"><span class="radio-circle"></span> 3</label>
+                    <input type="radio" id="fluency4" name="fluency" value="4" required>
+                    <label for="fluency4"><span class="radio-circle"></span> 4</label>
+                    <input type="radio" id="fluency5" name="fluency" value="5" required>
+                    <label for="fluency5"><span class="radio-circle"></span> 5</label>
+                <br>
+
+                <h4 for="grammar">Grammar : </h4>
+                    <input type="radio" id="grammar1" name="grammar" value="1" required>
+                    <label for="grammar1"><span class="radio-circle"></span> 1</label>
+                    <input type="radio" id="grammar2" name="grammar" value="2" required>
+                    <label for="grammar2"><span class="radio-circle"></span> 2</label>
+                    <input type="radio" id="grammar3" name="grammar" value="3" required>
+                    <label for="grammar3"><span class="radio-circle"></span> 3</label>
+                    <input type="radio" id="grammar4" name="grammar" value="4" required>
+                    <label for="grammar4"><span class="radio-circle"></span> 4</label>
+                    <input type="radio" id="grammar5" name="grammar" value="5" required>
+                    <label for="grammar5"><span class="radio-circle"></span> 5</label>
+            <br>
+                <h4 for="vocabulary">Vocabulary : </h4>
+                    <input type="radio" id="vocabulary1" name="vocabulary" value="1" required>
+                    <label for="vocabulary1"><span class="radio-circle"></span> 1</label>
+                    <input type="radio" id="vocabulary2" name="vocabulary" value="2" required>
+                    <label for="vocabulary2"><span class="radio-circle"></span> 2</label>
+                    <input type="radio" id="vocabulary3" name="vocabulary" value="3" required>
+                    <label for="vocabulary3"><span class="radio-circle"></span> 3</label>
+                    <input type="radio" id="vocabulary4" name="vocabulary" value="4" required>
+                    <label for="vocabulary4"><span class="radio-circle"></span> 4</label>
+                    <input type="radio" id="vocabulary5" name="vocabulary" value="5" required>
+                    <label for="vocabulary5"><span class="radio-circle"></span> 5</label>
+            <br>
+            
+                <h4 for="cefr">CEFR Rating : </h4>
+                    <input type="radio" id="cefrA1" name="cefr" value="A1" required>
+                    <label for="cefrA1"><span class="radio-circle"></span> A1</label>
+                    <input type="radio" id="cefrA2" name="cefr" value="A2" required>
+                    <label for="cefrA2"><span class="radio-circle"></span> A2</label>
+                    <input type="radio" id="cefrB1" name="cefr" value="B1" required>
+                    <label for="cefrB1"><span class="radio-circle"></span> B1</label>
+                    <input type="radio" id="cefrB2" name="cefr" value="B2" required>
+                    <label for="cefrB2"><span class="radio-circle"></span> B2</label>
+            <br>
+
+                <h4 for="comment">Comment : </h4>
+                    <textarea id="comment" name="comment" rows="4" cols="50"></textarea>
+            <br>
+                <input type="submit" value="Submit Rating" class="submit-btn">
+        </form>
+    </div>
+
+
+    <script>
+        const homeButton = document.getElementById('homeButton');
+        homeButton.addEventListener('click', function() {
+            window.location.href = "/";
+        });
+    </script>
+
+    <script src="{{ url_for('static', filename='js/playOnClick.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/highlightWord.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/submitRating.js') }}"></script>
+    
+</body>
+</html>

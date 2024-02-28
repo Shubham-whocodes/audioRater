@@ -1,0 +1,31 @@
+.msg{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 10%;
+    color: black;
+    width: 96%;
+    margin: 20px auto;
+    background-color: #f9f9f9;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+}
+
+#homeButton{
+    text-align: center;
+    margin-left: 48%;
+    margin-top: 1%;
+    padding: 1%;
+    border: none;
+    background-color: whitesmoke;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.573);
+    color: black;
+    border-radius: 10px;
+  }
+  
+  #homeButton:hover{
+    background-color: #4caf50;
+    box-shadow: 0 3px 10px #2d8930;
+  }

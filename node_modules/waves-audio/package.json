@@ -1,0 +1,63 @@
+{
+  "name": "waves-audio",
+  "version": "0.5.2",
+  "description": "low level WebAudio components for synthesis",
+  "authors": [
+    "Norbert Schnell",
+    "Benjamin Matuszewski",
+    "Victor Saiz",
+    "Karim Barkati",
+    "Samuel Goldszmidt"
+  ],
+  "main": "dist/index.js",
+  "license": "BSD-3-Clause",
+  "standalone": "wavesAudio",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/wavesjs/waves-audio"
+  },
+  "bugs": {
+    "url": "https://github.com/wavesjs/waves-audio/issues"
+  },
+  "homepage": "http://wavesjs.github.io/waves-audio",
+  "keywords": [
+    "dsp",
+    "web audio",
+    "synthesis",
+    "scheduling",
+    "audio player",
+    "granular synthesis"
+  ],
+  "scripts": {
+    "bundle": "node ./bin/runner --bundle",
+    "deploy": "np --yolo",
+    "doc": "jsdoc -c jsdoc.json",
+    "test": "babel-tape-runner tests/**.js",
+    "transpile": "node ./bin/runner --transpile",
+    "version": "npm run transpile && npm run doc && git add docs",
+    "prewatch": "npm run transpile",
+    "watch": "node ./bin/runner --watch"
+  },
+  "dependencies": {
+    "babel-runtime": "^6.6.1",
+    "debug": "^2.2.0",
+    "waves-masters": "^1.0.0"
+  },
+  "devDependencies": {
+    "@ircam/jsdoc-template": "^1.0.2",
+    "babel-core": "^6.26.0",
+    "babel-plugin-transform-es2015-modules-commonjs": "^6.26.0",
+    "babel-plugin-transform-runtime": "^6.23.0",
+    "babel-preset-env": "^1.6.1",
+    "babel-tape-runner": "^2.0.1",
+    "browserify": "^14.5.0",
+    "chalk": "^2.3.0",
+    "fs-extra": "^4.0.3",
+    "jsdoc": "^3.5.5",
+    "klaw": "^2.1.1",
+    "np": "^2.18.2",
+    "tape": "^4.8.0",
+    "uglify-js": "^3.2.2",
+    "watch": "^1.0.2"
+  }
+}

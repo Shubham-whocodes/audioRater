@@ -1,0 +1,19 @@
+{
+    "audioID": "156634610412064_168-tblQuan_226_1",
+    "CandidateID": "156634610412064",
+    "sID": "168",
+    "prompt_text": "Describe the scene of an airport.",
+    "content_text": "",
+    "Grammar_score": 0.0,
+    "Vocabulary_score": 20.0,
+    "Topic_score": 0.0,
+    "avg_AccuracyScore": NaN,
+    "avg_FluencyScore": NaN,
+    "avg_ProsodyScore": NaN,
+    "avg_CompletenessScore": NaN,
+    "avg_PronScore": NaN,
+    "avg_SNR": 3.9740927,
+    "words": [],
+    "word_errors": [],
+    "phonemes": []
+}

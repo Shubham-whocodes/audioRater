@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>SVAR Audio Rater</title>
+    <!-- <link rel="stylesheet" href="{{ url_for('static', filename='css/audio_rater.css') }}"> -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <!-- <script src="https://unpkg.com/wavesurfer.js@7"></script> -->
+    <!-- <script src="{{ url_for('static', filename='js/playOnClick.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/submitRating.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/highlightWord.js') }}"></script> -->
+
+
+    <style>
+
+        body{
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: rgba(245, 245, 245, 0.964) ;
+        }
+        
+        #homeButton{
+          position: absolute; 
+          top: 10px;
+          padding: 0.5%;
+          border: none;
+          background-color: whitesmoke;
+          color: black;
+          right: 10px;
+          border-radius: 10px;
+        }
+        
+        #homeButton:hover{
+          color: #4caf50;
+        }
+        .bucket{
+            display: inline-block;
+            width: fit-content;
+            color: black;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+            border-radius: 50px;
+            padding: 0.7%;
+            margin: 0.4%;
+        }
+        
+        
+        #b1 {
+            background-color: transparent;
+        }
+        #b2 {
+            background-color: rgb(255, 220, 220);
+        }
+        #b3 {
+            background-color: rgb(255, 170, 170);
+        }
+        #b4 {
+            background-color: rgb(255, 100, 100);
+        }
+        #b5 {
+            background-color: red;
+        }
+        #LP {
+            background-color: rgb(72, 72, 235);
+            color: white;
+        }
+        
+        .word{
+            background: none;
+            border: none;
+            font: inherit;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            margin:0.1%;
+            border-radius: 2px;
+            padding: 0.5px;
+            font-size: 14px;
+            font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+        }
+        .word:hover {
+            text-shadow: black;
+            text-decoration: underline;
+          }
+        
+        .word-list{
+            width:fit-content;
+            background-color: whitesmoke;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+            border-radius: 1%;
+            padding: 2%;
+            overflow: auto;
+        }
+        
+        .container {
+            display: blocks;
+            width: 100%;
+            margin-left: 100px;
+            margin-right: 100px;
+        }
+
+        .counts{
+            display: inline-flex;
+            flex-direction: row;
+            width: 95%;
+            margin: 20px auto;
+            background-color: #f9f9f9;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .count {
+            background-color: whitesmoke;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            color: black;
+            border-radius: 10px;
+            padding: 1%;
+            margin: 1%;
+        }
+        
+        .audio-player {
+            position: relative;
+        }
+          
+        .audio-player audio {
+            margin-top: 3%;
+            width: 96%;
+            height: 35px;
+            background-color:whitesmoke;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+        }
+        
+        .audio-player audio::-webkit-media-controls-panel {
+            background-color:whitesmoke;
+            border-radius: 10px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1) ;}
+        
+        
+          .card {
+            width: 96%;
+            margin: 20px auto;
+            background-color: #f9f9f9;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        form {
+            align-items: center;
+        }
+        
+        label {
+            display: inline-block;
+            margin:10 auto;
+            font-size: 18px;
+        }
+        
+        textarea {
+            width: 96%;
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            resize: vertical;
+        }
+        
+        .submit-btn {
+            background-color: #4caf50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 20px;
+        }
+        
+        .submit-btn:hover {
+            background-color: #45a049;
+        }
+        
+        
+        #wordsDisplay span.underline::after {
+            content: "";
+            display: block;
+            width: 100%;
+            height: 1px;
+            background-color: green;
+            position: absolute;
+            left: 0;
+            bottom: -2px;
+            font-weight: bold;
+          }
+
+
+    </style>
+
+
+
+
+
+
+</head>
+<body>
+    <div class="container">
+        <div class="filename" style="text-align: center; font-size:14px; font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;">
+            <button id="homeButton" class="home-button"><i class="fas fa-home"> Home</i></button>
+            <h2>File Name -- {{ filename }}</h2>
+            <br>
+                <span class='bucket' id="b1" > Confidence == 100% </span>
+                <span class='bucket' id="b2" > Confidence >= 80% </span>
+                <span class='bucket' id="b3" > Confidence >= 50% </span>
+                <span class='bucket' id="b4" > Confidence >= 20% </span>
+                <span class='bucket' id="b5" > Confidence < 20% </span>
+                <span class='bucket' id="LP" > LongPause -- # </span>
+
+            <br><br>
+
+            <div class="audio-player">
+                <audio id="audio" preload="auto" controls>
+                  <source src="{{ url_for('static', filename='audios/' + filename + '.wav') }}" type="audio/wav">
+                  Your browser does not support the audio element.
+                </audio>
+            </div>
+            
+
+            <br><br>
+
+            <h3>--- Transcript ---</h3>
+
+
+            <div class="word-list">
+                {% for item in data %}
+                    {% if item['confidence'] == 1.0 %}
+                        <button class="word" id = 'b1' time-start="{{ item['start'] }}" time-dur="{{ item['duration'] }}" time-end="{{ item['end'] }}">{{ item['word'] }}</button>
+                        {% if item['pause'] != ''%}
+                            <button class="word" id = 'LP'>{{ item['pause'] }}</button>
+                        {% endif %}
+
+                    {% elif item['confidence'] < 1.0 and item['confidence'] >= 0.80 %}
+                        <button class="word" id = 'b2' time-start="{{ item['start'] }}" time-dur="{{ item['duration'] }}" time-end="{{ item['end'] }}">{{ item['word'] }}</button>
+                        {% if item['pause'] != '' %}
+                            <button class="word" id = 'LP'>{{ item['pause'] }}</button>
+                        {% endif %}
+
+                    {% elif item['confidence'] < 0.80 and item['confidence'] >= 0.50 %}
+                        <button class="word" id = 'b3' time-start="{{ item['start'] }}" time-dur="{{ item['duration'] }}" time-end="{{ item['end'] }}">{{ item['word'] }}</button>
+                        {% if item['pause'] != '' %}
+                            <button class="word" id = 'LP'>{{ item['pause'] }}</button>
+                        {% endif %}
+
+                    {% elif item['confidence'] < 0.50 and item['confidence'] >= 0.20 %}
+                        <button class="word" id = 'b4' time-start="{{ item['start'] }}" time-dur="{{ item['duration'] }}" time-end="{{ item['end'] }}">{{ item['word'] }}</button>
+                        {% if item['pause'] != '' %}
+                            <button class="word" id = 'LP'>{{ item['pause'] }}</button>
+                        {% endif %}
+                    {% else %}
+                        <button class="word" id = 'b5' time-start="{{ item['start'] }}" time-dur="{{ item['duration'] }}" time-end="{{ item['end'] }}">{{ item['word'] }}</button>
+                        {% if item['pause'] != '' %}
+                            <button class="word" id = 'LP' >{{ item['pause'] }}</button>
+                        {% endif %}
+                    {% endif %}
+                {% endfor %}
+            </div>
+    
+            <br><br>
+            <h3>--- MetaData ---</h3>
+
+            <div class="counts" style="text-align: center; font-size:14px; font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;">
+                <span class='count'>Confidence 100% - {{counts['c100']}} </span>
+                <span class='count'>Confidence 80% - {{counts['c80']}} </span>
+                <span class='count'>Confidence 50% - {{counts['c50']}} </span>
+                <span class='count'>Confidence 20% - {{counts['c20']}} </span>
+                <span class='count'>Confidence < 20% - {{counts['wrong']}} </span>
+                <span class='count'>Long Pauses - {{counts['longPause']}} </span>
+                <span class='count'>Pauses Duration - {{counts['longPauseDur']}} </span>
+                <span class='count'>RateOfSpeech - {{counts['rateOfSpeech']}} </span>
+            </div>  
+            
+        
+    <br><br>
+    <h3>--- Ratings ---</h3>
+    </div>     
+    <div class="card">
+        <form id="ratingForm">
+                <h4 for="pronunciation">Pronunciation : </h4>
+                    <input type="radio" id="pronunciation1" name="pronunciation" value="1" required>
+                    <label for="pronunciation1"><span class="radio-circle"></span> 1</label>
+                    <input type="radio" id="pronunciation2" name="pronunciation" value="2" required>
+                    <label for="pronunciation2"><span class="radio-circle"></span> 2</label>
+                    <input type="radio" id="pronunciation3" name="pronunciation" value="3" required>
+                    <label for="pronunciation3"><span class="radio-circle"></span> 3</label>
+                    <input type="radio" id="pronunciation4" name="pronunciation" value="4" required>
+                    <label for="pronunciation4"><span class="radio-circle"></span> 4</label>
+                    <input type="radio" id="pronunciation5" name="pronunciation" value="5" required>
+                    <label for="pronunciation5"><span class="radio-circle"></span> 5</label>
+        
+                <br>
+                <h4 for="fluency">Fluency : </h4>
+                    <input type="radio" id="fluency1" name="fluency" value="1" required>
+                    <label for="fluency1"><span class="radio-circle"></span> 1</label>
+                    <input type="radio" id="fluency2" name="fluency" value="2" required>
+                    <label for="fluency2"><span class="radio-circle"></span> 2</label>
+                    <input type="radio" id="fluency3" name="fluency" value="3" required>
+                    <label for="fluency3"><span class="radio-circle"></span> 3</label>
+                    <input type="radio" id="fluency4" name="fluency" value="4" required>
+                    <label for="fluency4"><span class="radio-circle"></span> 4</label>
+                    <input type="radio" id="fluency5" name="fluency" value="5" required>
+                    <label for="fluency5"><span class="radio-circle"></span> 5</label>
+                <br>
+
+                <h4 for="grammar">Grammar : </h4>
+                    <input type="radio" id="grammar1" name="grammar" value="1" required>
+                    <label for="grammar1"><span class="radio-circle"></span> 1</label>
+                    <input type="radio" id="grammar2" name="grammar" value="2" required>
+                    <label for="grammar2"><span class="radio-circle"></span> 2</label>
+                    <input type="radio" id="grammar3" name="grammar" value="3" required>
+                    <label for="grammar3"><span class="radio-circle"></span> 3</label>
+                    <input type="radio" id="grammar4" name="grammar" value="4" required>
+                    <label for="grammar4"><span class="radio-circle"></span> 4</label>
+                    <input type="radio" id="grammar5" name="grammar" value="5" required>
+                    <label for="grammar5"><span class="radio-circle"></span> 5</label>
+            <br>
+                <h4 for="vocabulary">Vocabulary : </h4>
+                    <input type="radio" id="vocabulary1" name="vocabulary" value="1" required>
+                    <label for="vocabulary1"><span class="radio-circle"></span> 1</label>
+                    <input type="radio" id="vocabulary2" name="vocabulary" value="2" required>
+                    <label for="vocabulary2"><span class="radio-circle"></span> 2</label>
+                    <input type="radio" id="vocabulary3" name="vocabulary" value="3" required>
+                    <label for="vocabulary3"><span class="radio-circle"></span> 3</label>
+                    <input type="radio" id="vocabulary4" name="vocabulary" value="4" required>
+                    <label for="vocabulary4"><span class="radio-circle"></span> 4</label>
+                    <input type="radio" id="vocabulary5" name="vocabulary" value="5" required>
+                    <label for="vocabulary5"><span class="radio-circle"></span> 5</label>
+            <br>
+            
+                <h4 for="cefr">CEFR Rating : </h4>
+                    <input type="radio" id="cefrA1" name="cefr" value="A1" required>
+                    <label for="cefrA1"><span class="radio-circle"></span> A1</label>
+                    <input type="radio" id="cefrA2" name="cefr" value="A2" required>
+                    <label for="cefrA2"><span class="radio-circle"></span> A2</label>
+                    <input type="radio" id="cefrB1" name="cefr" value="B1" required>
+                    <label for="cefrB1"><span class="radio-circle"></span> B1</label>
+                    <input type="radio" id="cefrB2" name="cefr" value="B2" required>
+                    <label for="cefrB2"><span class="radio-circle"></span> B2</label>
+            <br>
+
+                <h4 for="comment">Comment : </h4>
+                    <textarea id="comment" name="comment" rows="4" cols="50"></textarea>
+            <br>
+                <input type="submit" value="Submit Rating" class="submit-btn">
+        </form>
+    </div>
+
+    <script>
+
+            const homeButton = document.getElementById('homeButton');
+            homeButton.addEventListener('click', function() {
+                window.location.href = "/";
+            });
+
+            document.addEventListener("DOMContentLoaded", function() {
+
+                const audio = document.getElementById('audio');
+                const wordButtons = document.querySelectorAll('.word');
+            
+                wordButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const startTimestamp = parseFloat(button.getAttribute('time-start'));
+                    const endTimestamp = parseFloat(button.getAttribute('time-end'));
+                    playFromTo(startTimestamp, endTimestamp);
+                });
+                });
+            
+                function playFromTo(start, end) {
+                audio.currentTime = start;
+                audio.play();
+            
+                //   setTimeout(() => {
+                //     audio.pause();
+                //     audio.currentTime = start;
+                //   }, (end - start) * 1000);
+                }
+            
+            });
+            
+        
+
+
+            document.addEventListener("DOMContentLoaded", function() {
+                const audio = document.getElementById('audio');
+
+                const wordSpans = document.querySelectorAll('.word');
+
+                audio.addEventListener('timeupdate', function() {
+                const currentTime = audio.currentTime;
+
+                for (let i = 0; i < wordSpans.length; i++) {
+                    const start = parseFloat(wordSpans[i].getAttribute('time-start'));
+                    const end = parseFloat(wordSpans[i].getAttribute('time-end'));
+
+                    if (currentTime >= start && currentTime < end) {
+                        wordSpans[i].style.textDecoration = 'underline';
+                        // wordSpans[i].classList.add('underline');
+                    } else {
+                        wordSpans[i].style.textDecoration = 'none';
+                        // wordSpans[i].classList.remove('underline');
+                    }
+                }
+                });
+
+                audio.addEventListener('ended', function() {
+                for (let i = 0; i < wordSpans.length; i++) {
+                    wordSpans[i].style.textDecoration = 'none';
+                    // wordSpans[i].classList.remove('underline');
+                }
+                });
+                function playFrom(time) {
+                audio.currentTime = time;
+                audio.play();
+                }
+
+            });
+
+
+            const ratingForm = document.getElementById('ratingForm');
+    
+            ratingForm.addEventListener('submit', function(event) {
+                event.preventDefault(); 
+                
+                const formData = new FormData(ratingForm);
+                const data = {};
+                formData.forEach((value, key) => {
+                    data[key] = value;
+                });
+                
+                const jsonData = JSON.stringify(data);
+                
+                fetch('/catch_rating', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: jsonData
+                })
+                .then(response => {
+                    window.location.href = "/";
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+            });
+
+    </script>
+       
+</body>
+</html>

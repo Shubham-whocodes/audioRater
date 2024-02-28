@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<title>Error</title>
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/not_exist.css') }}">
+</head>
+
+<body>
+
+    <div class="msg">
+        <p>{{ msg }}</p>
+    </div>
+    <button id="homeButton" class="home-button">Return Home</button>
+
+    <script>
+        const homeButton = document.getElementById('homeButton');
+        homeButton.addEventListener('click', function() {
+            window.location.href = "/";
+        });
+    </script>
+
+</body>
+</html>

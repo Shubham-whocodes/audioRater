@@ -1,0 +1,19 @@
+{
+    "audioID": "156635606685822_4457-tblQuan_226_1",
+    "CandidateID": "156635606685822",
+    "sID": "4457",
+    "prompt_text": "Describe the smartphone application that you use the most.",
+    "content_text": "",
+    "Grammar_score": 0.0,
+    "Vocabulary_score": 20.0,
+    "Topic_score": 0.0,
+    "avg_AccuracyScore": NaN,
+    "avg_FluencyScore": NaN,
+    "avg_ProsodyScore": NaN,
+    "avg_CompletenessScore": NaN,
+    "avg_PronScore": NaN,
+    "avg_SNR": 0.847553,
+    "words": [],
+    "word_errors": [],
+    "phonemes": []
+}
